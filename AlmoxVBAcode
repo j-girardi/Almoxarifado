@@ -1,5 +1,6 @@
 Sub GeraDados()
 
+'---------------DADOS-------------------------------------------------------------------------------------
 Sheets(1).Range("A3:A1048576").Clear
 Set SourceRange = Planilha1.Range("A2")
 If Range("B2").Value <= 1 Or Range("B2").Value = Empty Then
@@ -14,39 +15,45 @@ Else:
     Planilha2.Range("C" & LastRow + 1 & ":C" & LastRow + Range("B2").Value) = Planilha1.Range("D2").Value
     Planilha2.Range("D" & LastRow + 1 & ":D" & LastRow + Range("B2").Value) = Planilha1.Range("E2").Value
     
+'---------------REQUISIÇÃO--------------------------------------------------------------------------------
     NBoxes = Planilha1.Range("B2").Value / Planilha1.Range("C2").Value
     MsgBox (NBoxes & " Caixas")
     
-    For currentBox = 1 To NBoxes
-        MsgBox ("Caixa " & currentBox)
+    For currentbox = 1 To NBoxes
         Planilha4.Select
-        If currentBox <> NBoxes Then
-            Planilha4.Select
-            Planilha4.Range("A1:E16").Copy
-            Range("A" & currentBox * 18).Select
-            Planilha4.Paste
-            
+        If currentbox <> NBoxes Then
+            If currentbox = 1 Then
+                Planilha4.Select
+                Planilha4.Range("A1:E16").Copy
+                Range("A" & currentbox * 17).Select
+                Planilha4.Paste
+            Else
+                Planilha4.Select
+                Planilha4.Range("A1:E16").Copy
+                Range("A" & 17 + (currentbox - 1) * 16).Select
+                Planilha4.Paste
+            End If
         End If
             
-        OffsetC = (currentBox - 1) * Planilha1.Range("C2").Value
-        If currentBox = 1 Then
-            offsetP = 1
+        OffsetC = (currentbox - 1) * Planilha1.Range("C2").Value
+        If currentbox = 1 Then
+            offsetP = 0
         Else:
-            offsetP = (currentBox - 1) * 18
+            offsetP = (currentbox - 1) * 16
         End If
         
         RangeCopy = "A" & 2 + OffsetC & ":A" & 2 + OffsetC + Planilha1.Range("C2").Value - 1
-        RangePaste = "A" & 4 + offsetP & ":A" & 4 + offsetP + Planilha1.Range("C2").Value - 1
-        'MsgBox (currentBox)
+        RangePaste = "A" & 5 + offsetP & ":A" & 5 + offsetP + Planilha1.Range("C2").Value - 1
         
-        Planilha4.Range(RangePaste).Value = Planilha1.Range(RangeCopy).Value
-        Planilha4.Range(RangePaste).Offset(, 1).Value = Planilha1.Range("E2").Value
-        Planilha4.Range("C1").Offset(2 + offsetP).Value = currentBox
-        Planilha4.Range(RangePaste).Offset(, 3).Value = Date
-        
-    Next currentBox
-    
+        Planilha4.Range(RangePaste).Offset(, 2).Value = Planilha1.Range(RangeCopy).Value
+        Planilha4.Range("B" & 5 + offsetP).Value = Planilha1.Range("E2").Value
+        Planilha4.Range("A" & 5 + offsetP).Value = Planilha1.Range("D2").Value
+        Planilha4.Range("C" & 4 + offsetP).Value = currentbox
 
+        
+    Next currentbox
+    
+    
 End If
 
 Planilha1.Select
@@ -57,9 +64,10 @@ End Sub
 
 Sub Clear()
 
-Planilha4.Range("A18:E1048576").Clear
+Planilha4.Range("A17:E1048576").Clear
 Planilha4.Range("A5:E1048576").ClearContents
 
+Planilha1.Activate
 Planilha1.Range("A2:B2").ClearContents
 Planilha1.Range("A3:A1048576").Clear
 Planilha1.Range("A2").Select
@@ -68,34 +76,51 @@ End Sub
 
 Sub PrintReq()
     
-    NBoxes = Planilha1.Range("B2").Value / Planilha1.Range("C2").Value
+    Sheets(1).Range("A3:A1048576").Clear
+    Set SourceRange = Planilha1.Range("A2")
+    If Range("B2").Value <= 1 Or Range("B2").Value = Empty Then
+    Else:
+        Set fillRange = Planilha1.Range("A2:A" & Range("B2").Value + 1)
+        SourceRange.AutoFill Destination:=fillRange, Type:=xlFillSeries
+    End If
     
-    For currentBox = 1 To NBoxes
-        If currentBox <> NBoxes Then
-            Planilha4.Select
-            Planilha4.Range("A1:E16").Copy
-            Range("A" & currentBox * 18).Select
-            Planilha4.Paste
-            
+'---------------REQUISIÇÃO--------------------------------------------------------------------------------
+    NBoxes = Planilha1.Range("B2").Value / Planilha1.Range("C2").Value
+    MsgBox (NBoxes & " Caixas")
+    
+    For currentbox = 1 To NBoxes
+        Planilha4.Select
+        If currentbox <> NBoxes Then
+            If currentbox = 1 Then
+                Planilha4.Select
+                Planilha4.Range("A1:E16").Copy
+                Range("A" & currentbox * 17).Select
+                Planilha4.Paste
+            Else
+                Planilha4.Select
+                Planilha4.Range("A1:E16").Copy
+                Range("A" & 17 + (currentbox - 1) * 16).Select
+                Planilha4.Paste
+            End If
         End If
             
-        OffsetC = (currentBox - 1) * Planilha1.Range("C2").Value
-        If currentBox = 1 Then
-            offsetP = 1
+        OffsetC = (currentbox - 1) * Planilha1.Range("C2").Value
+        If currentbox = 1 Then
+            offsetP = 0
         Else:
-            offsetP = (currentBox - 1) * 18
+            offsetP = (currentbox - 1) * 16
         End If
         
         RangeCopy = "A" & 2 + OffsetC & ":A" & 2 + OffsetC + Planilha1.Range("C2").Value - 1
-        RangePaste = "A" & 4 + offsetP & ":A" & 4 + offsetP + Planilha1.Range("C2").Value - 1
+        RangePaste = "A" & 5 + offsetP & ":A" & 5 + offsetP + Planilha1.Range("C2").Value - 1
         
-        Planilha4.Range(RangePaste).Value = Planilha1.Range(RangeCopy).Value
-        Planilha4.Range(RangePaste).Offset(, 1).Value = Planilha1.Range("E2").Value
-        Planilha4.Range("C1").Offset(2 + offsetP).Value = currentBox
-        Planilha4.Range(RangePaste).Offset(, 3).Value = Date
-        MsgBox ("Caixa " & currentBox)
-    Next currentBox
+        Planilha4.Range(RangePaste).Offset(, 2).Value = Planilha1.Range(RangeCopy).Value
+        Planilha4.Range("B" & 5 + offsetP).Value = Planilha1.Range("E2").Value
+        Planilha4.Range("A" & 5 + offsetP).Value = Planilha1.Range("D2").Value
+        Planilha4.Range("C" & 4 + offsetP).Value = currentbox
 
-
+        
+    Next currentbox
 
 End Sub
+

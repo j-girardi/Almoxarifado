@@ -1,0 +1,43 @@
+Sub SaveCSV()
+
+'Macro to save worksheets (tabs) in .csv
+
+Dim xWs As Worksheet
+Application.ScreenUpdating = False
+Set ws = ActiveSheet
+
+Path = GetFolder()
+
+'loop through all tabs
+For Each xWs In Application.ActiveWorkbook.Worksheets
+    'doesn't save first and second tab (can be changed)
+    If xWs.Index = 1 Or xWs.Index = 2 Then
+        MsgBox (xWs.Index)
+    Else
+        xWs.Copy
+        fname = Path & "\" & xWs.Name
+        Application.ActiveWorkbook.SaveAs fileName:=fname, FileFormat:=xlCSV
+        Application.ActiveWorkbook.Close
+    End If
+Next
+
+Application.ScreenUpdating = True
+
+End Sub
+
+Function GetFolder() As String
+
+'Function to ask user the folder to save
+    Dim fldr As FileDialog
+    Dim sItem As String
+    Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
+    With fldr
+        .Title = "Select a Folder"
+        .AllowMultiSelect = False
+        If .Show <> -1 Then GoTo NextCode
+        sItem = .SelectedItems(1)
+    End With
+NextCode:
+    GetFolder = sItem
+    Set fldr = Nothing
+End Function
